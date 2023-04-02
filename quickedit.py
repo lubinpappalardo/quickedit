@@ -97,7 +97,12 @@ root = Tk()
 root.title("Quick image edit")
 root.config(bg=dark_bg_color)
 root.minsize(500, 400)
-#root.iconbitmap(os.path.abspath("quickedit.ico"))
+# Get the absolute path to the .ico file
+script_dir = os.path.dirname(os.path.abspath(__file__))
+icon_path = os.path.join(script_dir, "quickedit.ico")
+
+# Use the absolute path to set the icon
+root.iconbitmap(icon_path)
 
 frame = Frame(root, bg=bg_color)
 frame.grid(row=0, column=0, padx=5, pady=5)
@@ -145,7 +150,7 @@ def quit():
   root.destroy()
 
 def link():
-  url = "https://github.com/txoriurdina"
+  url = "https://github.com/txoriurdina/quickedit"
   os.system("start " + url)
 
 # create a menu bar
@@ -154,6 +159,8 @@ root.config(menu=menu_bar)
 
 # create a file menu
 file_menu = Menu(menu_bar, tearoff=0)
+file_menu.add_command(label="Open", command=browse_file)
+file_menu.add_separator()
 file_menu.add_command(label="Exit", command=quit)
 menu_bar.add_cascade(label="File", menu=file_menu)
 
