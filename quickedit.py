@@ -35,6 +35,7 @@ def toggle_theme():
     browsing_box.config(bg=bg_color)
     title.config(bg=bg_color, fg=text_color)
     image.config(bg=bg_color)
+    small_image.config(bg=bg_color)
     input_path_entry.config(bg=bg_color, fg=text_color)
     browse_button.config(bg=bg_color, fg=text_color, activebackground=active_color, activeforeground=active_color_fg)
     reset_button.config(bg=bg_color, fg=text_color, activebackground=active_color, activeforeground=active_color_fg)
@@ -71,6 +72,14 @@ def browse_file():
     root.img_tk = img_tk
     image.config(image=img_tk)
 
+    new_width = 100
+    new_height = int(new_width * aspect_ratio)
+    resized_img = img.resize((new_width, new_height), Image.ANTIALIAS) 
+    small_img_tk = ImageTk.PhotoImage(resized_img) 
+    root.small_img_tk = small_img_tk
+    small_image.config(image=small_img_tk)
+    
+
 def save():
     global output_path, output
     output.save(output_path)
@@ -96,9 +105,13 @@ def remove_bg():
     input_path = input_path_entry.get()
     name = input_path.split(".")
     filename = name[0]
-    output_path = rf'{filename} - removed_bg.png'
-    input = Image.open(input_path)
-    output = remove(input)
+    if output == None:
+        output_path = rf'{filename} - removed_bg.png'
+        input = Image.open(input_path)
+        output = remove(input)
+    else:
+        output = remove(output)
+        output_path = rf'{filename} - edited.png'
 
     img = output
     aspect_ratio = img.size[1] / img.size[0]  # calculate aspect ratio
@@ -114,9 +127,13 @@ def grayscale():
     input_path = input_path_entry.get()
     name = input_path.split(".")
     filename = name[0]
-    output_path = rf'{filename} - grayscale.png'
-    input = Image.open(input_path)
-    output = ImageOps.grayscale(input)
+    if output == None:
+        output_path = rf'{filename} - grayscale.png'
+        input = Image.open(input_path)
+        output = ImageOps.grayscale(input)
+    else:
+        output = ImageOps.grayscale(output)
+        output_path = rf'{filename} - edited.png'
 
     img = output
     aspect_ratio = img.size[1] / img.size[0]  # calculate aspect ratio
@@ -132,10 +149,13 @@ def invert_colors():
     input_path = input_path_entry.get()
     name = input_path.split(".")
     filename = name[0]
-    output_path = rf'{filename} - inverted_colors.png'
-
-    input = Image.open(input_path)
-    output = ImageOps.invert(input)
+    if output == None:
+        output_path = rf'{filename} - inverted_colors.png'
+        input = Image.open(input_path)
+        output = ImageOps.invert(input)
+    else:
+        output = ImageOps.invert(output)
+        output_path = rf'{filename} - edited.png'
 
     img = output
     aspect_ratio = img.size[1] / img.size[0]  # calculate aspect ratio
@@ -151,10 +171,13 @@ def flip():
     input_path = input_path_entry.get()
     name = input_path.split(".")
     filename = name[0]
-    output_path = rf'{filename} - flip.png'
-
-    im = Image.open(input_path)
-    output = im.transpose(Image.FLIP_LEFT_RIGHT)
+    if output == None:
+        output_path = rf'{filename} - flip.png'
+        im = Image.open(input_path)
+        output = im.transpose(Image.FLIP_LEFT_RIGHT)
+    else:
+        output = output.transpose(Image.FLIP_LEFT_RIGHT)
+        output_path = rf'{filename} - edited.png'
 
     img = output
     aspect_ratio = img.size[1] / img.size[0]  # calculate aspect ratio
@@ -171,10 +194,13 @@ def rotate():
     degree = float(rotate_entry.get())
     name = input_path.split(".")
     filename = name[0]
-    output_path = rf'{filename} - rotate.png'
-
-    input = Image.open(input_path)
-    output = input.rotate(degree)
+    if output == None:
+        output_path = rf'{filename} - rotate.png'
+        input = Image.open(input_path)
+        output = input.rotate(degree)
+    else:
+        output = output.rotate(degree)
+        output_path = rf'{filename} - edited.png'
 
     img = output
     aspect_ratio = img.size[1] / img.size[0]  # calculate aspect ratio
@@ -191,11 +217,14 @@ def apply_filter():
     filter_option = variable.get()
     name = input_path.split(".")
     filename = name[0]
-    output_path = rf'{filename} - filter {filter_option}.png'
     apply = getattr(ImageFilter, filter_option)
-
-    input = Image.open(input_path)
-    output = input.filter(apply)
+    if output == None:
+        output_path = rf'{filename} - filter {filter_option}.png'
+        input = Image.open(input_path)
+        output = input.filter(apply)
+    else:
+        output_path = rf'{filename} - edited.png'
+        output = output.filter(apply)
 
     img = output
     aspect_ratio = img.size[1] / img.size[0]  # calculate aspect ratio
@@ -225,7 +254,7 @@ output_path = None
 root = Tk()
 root.title("Quick image edit")
 root.config(bg=dark_bg_color)
-root.minsize(590, 650)
+root.minsize(690, 650)
 script_dir = os.path.dirname(os.path.abspath(__file__))
 icon_path = os.path.join(script_dir, "quickedit.ico")
 root.iconbitmap(icon_path)
@@ -236,19 +265,22 @@ frame = Frame(root, bg=bg_color)
 frame.grid(row=0, column=0)
 
 title = Label(frame, text="Quick image edit", font=("Arial", 24), bg=bg_color, fg=text_color)
-title.grid(row=0, column=0, pady=20, sticky="ew")
+title.grid(row=0, column=1, pady=20, sticky="ew")
 
-left_side = Frame(frame, bg=bg_color)
-left_side.grid(row=1, column=0, padx=5)
+left_side = Frame(frame, bg=bg_color, highlightthickness=2, relief="solid", highlightbackground="#545454")
+left_side.grid(row=1, column=0, padx=5, pady=5, sticky="n")
+
+middle_side = Frame(frame, bg=bg_color)
+middle_side.grid(row=1, column=1, padx=5)
 
 right_side = Frame(frame, bg=bg_color, width=100)
-right_side.grid(row=1, column=1, sticky="en")
+right_side.grid(row=1, column=2, sticky="en")
 
 bottom_left_side = Frame(frame, bg=bg_color)
-bottom_left_side.grid(row=2, column=0, sticky="w")
+bottom_left_side.grid(row=2, column=0, columnspan=2, sticky="w")
 
 bottom_right_side = Frame(frame, bg=bg_color, width=100)
-bottom_right_side.grid(row=2, column=1)
+bottom_right_side.grid(row=2, column=2)
 
 # Create a label to display the status message
 status_label = Label(bottom_left_side, text="", bg=bg_color, fg=text_color, cursor="hand2")
@@ -261,13 +293,23 @@ status_label.bind("<Button-1>", open)
 save_button = Button(bottom_right_side, text="SAVE", relief="raised", width=20, activebackground=active_color, activeforeground=active_color_fg, command=save, bg=bg_color, fg=text_color)
 save_button.grid(row=0, column=0, sticky="e")
 
-#root_width = root.winfo_width()
-#root_height = root.winfo_height()
+#------------------------ LEFT SIDE------------------------
 
-#------------------------LEFT SIDE------------------------
+#preview the image
+image_path = os.path.join(script_dir, "quickedit.ico")
+img = Image.open(image_path)
+aspect_ratio = img.size[1] / img.size[0]  # calculate aspect ratio
+new_width = 100
+new_height = int(new_width * aspect_ratio)
+resized_img = img.resize((new_width, new_height), Image.ANTIALIAS) 
+small_img_tk = ImageTk.PhotoImage(resized_img) 
+small_image = Label(left_side, image=small_img_tk, borderwidth=0, highlightthickness=0, bg=bg_color)
+small_image.grid(row=0, column=0, sticky="n")
+
+#------------------------MIDDLE SIDE------------------------
 
 # Create a label and entry field for input file path
-browsing_box = Frame(left_side, bg=bg_color, width=img_width)
+browsing_box = Frame(middle_side, bg=bg_color, width=img_width)
 browsing_box.grid(row=2, column=0, sticky="w")
 browse_button_width = 15
 browse_button = Button(browsing_box, text="Choose file", relief="raised", width=browse_button_width, activebackground=active_color, activeforeground=active_color_fg, command=browse_file, bg=bg_color, fg=text_color)
@@ -283,7 +325,7 @@ new_width = img_width
 new_height = int(new_width * aspect_ratio)
 resized_img = img.resize((new_width, new_height), Image.ANTIALIAS) 
 img_tk = ImageTk.PhotoImage(resized_img) 
-image = Label(left_side, image=img_tk, borderwidth=0, highlightthickness=0, bg=bg_color)
+image = Label(middle_side, image=img_tk, borderwidth=0, highlightthickness=0, bg=bg_color)
 image.grid(row=3, column=0)
 
 
