@@ -1,6 +1,12 @@
 # Quickedit
 Quick image edit on your desktop. Remove background, invert colors, desaturate, flip... and way more !
+
 - - - -
+
+![Quickedit](https://github.com/txoriurdina/assets/blob/main/quickedit.png "Quickedit presentation") 
+
+- - - -
+
 ## Features ##
 * `Remove background`
 * `Invert colors`
