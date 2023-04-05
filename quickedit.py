@@ -1,8 +1,11 @@
 import os
+import tkinter.font as tkFont
 from tkinter import *
 from tkinter import filedialog
 from PIL import Image, ImageOps, ImageFilter, ImageTk
 from rembg import remove
+from ctypes import windll
+windll.shcore.SetProcessDpiAwareness(1)
 
 #---------------------------------------COLORS AND THEME---------------------------------------
 
@@ -11,7 +14,8 @@ dark_bg_color = "#1E1E1E"
 light_text_color = "black"
 dark_text_color = "white"
 light_active_color = "#e8e8e8"
-dark_active_color = "#363636"
+dark_active_color = "#0a0a0a"
+dark_bg_button_color = "#373737"
 light_active_color_fg = "black"
 dark_active_color_fg = "white"
 light_theme = "Light theme"
@@ -242,8 +246,8 @@ bg_color = dark_bg_color
 text_color = dark_text_color
 active_color = dark_active_color
 active_color_fg = dark_active_color_fg
+bg_button_color = dark_bg_button_color
 theme = light_theme
-
 
 global img, img_width, output, output_path
 img = None
@@ -254,26 +258,31 @@ output_path = None
 root = Tk()
 root.title("Quick image edit")
 root.config(bg=dark_bg_color)
-root.minsize(690, 650)
+root.minsize(980, 650)
 script_dir = os.path.dirname(os.path.abspath(__file__))
 icon_path = os.path.join(script_dir, "quickedit.ico")
 root.iconbitmap(icon_path)
+
+h1_font_path = "Poppins-Bold.ttf"
+h1 = tkFont.Font(family="Poppins", size=24, name=h1_font_path)
+p_font_path = "Poppins-Regular.ttf"
+p = tkFont.Font(family="Poppins", size=10, name=p_font_path)
 
 #---------------------------------------LAYOUT OF THE APP---------------------------------------
 
 frame = Frame(root, bg=bg_color)
 frame.grid(row=0, column=0)
 
-title = Label(frame, text="Quick image edit", font=("Arial", 24), bg=bg_color, fg=text_color)
+title = Label(frame, text="Quick image edit", font=h1, bg=bg_color, fg=text_color)
 title.grid(row=0, column=1, pady=20, sticky="ew")
 
 left_side = Frame(frame, bg=bg_color, highlightthickness=2, relief="solid", highlightbackground="#545454")
 left_side.grid(row=1, column=0, padx=5, pady=5, sticky="n")
 
 middle_side = Frame(frame, bg=bg_color)
-middle_side.grid(row=1, column=1, padx=5)
+middle_side.grid(row=1, column=1, padx=5, sticky="n")
 
-right_side = Frame(frame, bg=bg_color, width=100)
+right_side = Frame(frame, bg=bg_color)
 right_side.grid(row=1, column=2, sticky="en")
 
 bottom_left_side = Frame(frame, bg=bg_color)
@@ -290,7 +299,7 @@ def open(event):
     os.startfile(file_path)
 status_label.bind("<Button-1>", open)
 
-save_button = Button(bottom_right_side, text="SAVE", relief="raised", width=20, activebackground=active_color, activeforeground=active_color_fg, command=save, bg=bg_color, fg=text_color)
+save_button = Button(bottom_right_side, text="SAVE", relief="raised", width=22, activebackground=active_color, activeforeground=active_color_fg, command=save, bg="#4472c4", fg=text_color)
 save_button.grid(row=0, column=0, sticky="e")
 
 #------------------------ LEFT SIDE------------------------
@@ -312,9 +321,9 @@ small_image.grid(row=0, column=0, sticky="n")
 browsing_box = Frame(middle_side, bg=bg_color, width=img_width)
 browsing_box.grid(row=2, column=0, sticky="w")
 browse_button_width = 15
-browse_button = Button(browsing_box, text="Choose file", relief="raised", width=browse_button_width, activebackground=active_color, activeforeground=active_color_fg, command=browse_file, bg=bg_color, fg=text_color)
+browse_button = Button(browsing_box, text="Choose file", font=p, relief="raised", width=browse_button_width, activebackground=active_color, activeforeground=active_color_fg, command=browse_file, bg=bg_button_color, fg=text_color)
 browse_button.grid(row=0, column=0, padx=(0, 5), pady=5)
-input_path_entry = Entry(browsing_box, width=46, bg=bg_color, fg=text_color)
+input_path_entry = Entry(browsing_box, width=46, bg=bg_color, fg=text_color, font=p)
 input_path_entry.grid(row=0, column=1, padx=0, pady=5)
 
 #preview the image
@@ -332,43 +341,43 @@ image.grid(row=3, column=0)
 #------------------------RIGHT SIDE------------------------
 
 # Create a button to remove the background
-reset_button = Button(right_side, text="Reset", width=20, relief="raised", activebackground=active_color, activeforeground=active_color_fg, command=reset, bg=bg_color, fg=text_color)
+reset_button = Button(right_side, text="Reset", font=p, width=20, relief="raised", activebackground=active_color, activeforeground=active_color_fg, command=reset, bg=bg_button_color, fg=text_color)
 reset_button.grid(row=1, column=1, padx=5, pady=5)
 
 # Create a button to remove the background
-remove_bg_button = Button(right_side, text="Remove Background", width=20, relief="raised", activebackground=active_color, activeforeground=active_color_fg, command=remove_bg, bg=bg_color, fg=text_color)
+remove_bg_button = Button(right_side, text="Remove Background", font=p, width=20, relief="raised", activebackground=active_color, activeforeground=active_color_fg, command=remove_bg, bg=bg_button_color, fg=text_color)
 remove_bg_button.grid(row=2, column=1, padx=5, pady=5)
 
 # Create a button to invert colors
-invert_colors_button = Button(right_side, text="Invert Colors", width=20, relief="raised", activebackground=active_color, activeforeground=active_color_fg, command=invert_colors, bg=bg_color, fg=text_color)
+invert_colors_button = Button(right_side, text="Invert Colors", font=p, width=20, relief="raised", activebackground=active_color, activeforeground=active_color_fg, command=invert_colors, bg=bg_button_color, fg=text_color)
 invert_colors_button.grid(row=3, column=1, padx=5, pady=5)
 
 # Create a button to desaturate
-desaturate_button = Button(right_side, text="Desaturate", width=20, relief="raised", activebackground=active_color, activeforeground=active_color_fg, command=grayscale, bg=bg_color, fg=text_color)
+desaturate_button = Button(right_side, text="Desaturate", font=p, width=20, relief="raised", activebackground=active_color, activeforeground=active_color_fg, command=grayscale, bg=bg_button_color, fg=text_color)
 desaturate_button.grid(row=4, column=1, padx=5, pady=5)
 
 # Create a button to flip
-flip_button = Button(right_side, text="Flip", width=20, relief="raised", activebackground=active_color, activeforeground=active_color_fg, command=flip, bg=bg_color, fg=text_color)
+flip_button = Button(right_side, text="Flip", font=p, width=20, relief="raised", activebackground=active_color, activeforeground=active_color_fg, command=flip, bg=bg_button_color, fg=text_color)
 flip_button.grid(row=5, column=1, padx=5, pady=5)
 
 # Create a button to rotate
 def clear_placeholder(event):
     rotate_entry.delete(0, END)
-rotate_button = Button(right_side, text="Rotate", width=20, relief="raised", activebackground=active_color, activeforeground=active_color_fg, command=rotate, bg=bg_color, fg=text_color)
+rotate_button = Button(right_side, text="Rotate", font=p, width=20, relief="raised", activebackground=active_color, activeforeground=active_color_fg, command=rotate, bg=bg_button_color, fg=text_color)
 rotate_button.grid(row=6, column=1, padx=5, pady=5)
-rotate_entry = Entry(right_side, width=24, bg=bg_color, fg=text_color)
-rotate_entry.grid(row=7, column=1, padx=0, pady=(5, 10))
+rotate_entry = Entry(right_side, font=p, width=20, bg=bg_color, fg=text_color)
+rotate_entry.grid(row=7, column=1, padx=5, pady=(5, 10))
 rotate_entry.bind("<FocusIn>", clear_placeholder)
 rotate_entry.insert(0, "Enter angle to rotate...")
 
 # Create a button to filter
-filter_button = Button(right_side, text="Filter", width=20, relief="raised", activebackground=active_color, activeforeground=active_color_fg, command=apply_filter, bg=bg_color, fg=text_color)
+filter_button = Button(right_side, text="Filter", font=p, width=20, relief="raised", activebackground=active_color, activeforeground=active_color_fg, command=apply_filter, bg=bg_button_color, fg=text_color)
 filter_button.grid(row=8, column=1, padx=5, pady=5)
 choices = ["BLUR", "CONTOUR", "DETAIL", "EDGE_ENHANCE", "EDGE_ENHANCE_MORE", "EMBOSS", "FIND_EDGES", "SHARPEN", "SMOOTH", "SMOOTH_MORE"]
 variable = StringVar(right_side)
 variable.set('Choose your filter')
 filter_options = OptionMenu(right_side, variable, *choices)
-filter_options.config(width=18, relief="raised", borderwidth=2, highlightthickness=0, activebackground=active_color, activeforeground=active_color_fg, bg=bg_color, fg=text_color)
+filter_options.config(width=15, relief="raised", font=p, borderwidth=2, highlightthickness=0, activebackground=active_color, activeforeground=active_color_fg, bg=bg_color, fg=text_color)
 filter_options.grid(row=9, column=1, padx=5, pady=(5, 10))
 
 
