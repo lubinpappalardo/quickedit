@@ -24,3 +24,7 @@ Quick image edit on your desktop. Remove background, invert colors, desaturate, 
   * `Sharpen`
   * `Smooth`
   * `Smooth more`
+
+- - - -
+
+## To download the app, look at the download release ##
