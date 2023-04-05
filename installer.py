@@ -13,7 +13,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     # List of libraries to install
-    libraries_to_install = ['rembg', 'pillow', 'tk', 'winshell']
+    libraries_to_install = ['rembg', 'pillow', 'tk', 'winshell', 'ctypes']
 
     # Install libraries
     install_libraries(libraries_to_install)
