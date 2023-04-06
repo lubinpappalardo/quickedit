@@ -3,7 +3,7 @@ Quick image edit on your desktop. Remove background, invert colors, desaturate, 
 
 - - - -
 
-![Quickedit](https://github.com/txoriurdina/assets/blob/main/quickedit.png "Quickedit presentation") 
+![Quickedit](https://github.com/txoriurdina/assets/blob/main/quickedit/quickedit.png "Quickedit presentation") 
 
 - - - -
 
